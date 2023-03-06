@@ -10,7 +10,8 @@
                 //extensions for nextjs
                 "willluke.nextjs",
                 "prisma.prisma",
-                "chneau.resource-monitor"
+                "chneau.resource-monitor",
+                "github.vscode-pull-request-github"
             ]
         },
     },
