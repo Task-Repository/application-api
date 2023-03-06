@@ -1,0 +1,9 @@
+{
+    "realm":"task-repository-testing",
+    "notBefore":0,
+    "enabled":true,
+    "sslRequired":"external",
+    "bruteForceProtected":true,
+    "failureFactor":10,
+    "eventsEnabled":false
+ }
