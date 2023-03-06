@@ -1,0 +1,25 @@
+{
+    "name": "task-repository-api",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "github.copilot",
+                //extensions for nextjs
+                "willluke.nextjs",
+                "prisma.prisma",
+                "chneau.resource-monitor"
+            ]
+        },
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": "true",
+            "moby": "true"
+        }
+    },
+    "postStartCommand": "docker compose up -d keycloak-db && docker compose up -d keycloak"
+}
