@@ -1,0 +1,4 @@
+joeblogs Joe Blogs joeblogs@soxprox.com password createProject;admin
+theocarr Theo Carr theo@soxprox.com password 
+lauracarr Laura Carr laura@soxprox.com password editOwnProject
+scoombs Steven Coombs steven@soxprox.com 123 editAnyProject;createProject
