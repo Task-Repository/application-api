@@ -27,7 +27,7 @@ until $(curl --output /dev/null --silent --head --fail ${KEYCLOAK_URL}/auth/real
 done
 echo
 echo "Keycloak started"
-sleep 60
+sleep 1
 # Obtain access token
 login_result=$(curl --silent --show-error -X POST ${KEYCLOAK_URL}/auth/realms/master/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
@@ -39,6 +39,15 @@ login_result=$(curl --silent --show-error -X POST ${KEYCLOAK_URL}/auth/realms/ma
 
 # Get access_token with jq
 access_token=$(echo $login_result | jq -r '.access_token')
+
+
+
+
+
+
+##########
+# Create realm
+##########
 
 # Create a realm using curl and the access_token as a Bearer token
 realm_result=$(curl --silent --show-error \
@@ -54,6 +63,12 @@ if [[ $realm_result == *"Conflict detected"* ]]; then
 fi
 
 echo "Created keycloak realm ${NEW_REALM}"
+
+
+
+##########
+# Create client
+##########
 
 # Create a client using curl and the access_token as a Bearer token
 client_result=$(curl --silent --show-error \
@@ -73,3 +88,11 @@ if [[ ! -z $error_meesage ]]; then
 else
     echo "Created client ${NEW_CLIENT}"
 fi 
+
+
+/bin/bash ./scripts/create_realm_roles.sh
+/bin/bash ./scripts/create_keycloak_users.sh
+
+
+
+
