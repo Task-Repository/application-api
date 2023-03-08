@@ -89,8 +89,9 @@ else
     echo "Created client ${NEW_CLIENT}"
 fi 
 
-./create_realm_roles.sh
-./create_keycloak_users.sh
+
+/bin/bash ./scripts/create_realm_roles.sh
+/bin/bash ./scripts/create_keycloak_users.sh
 
 
 

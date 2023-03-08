@@ -18,10 +18,10 @@ error_message=$(echo $client_result | jq -r '.errorMessage')
 
 # if error_meesage is not null, then echo "failed to create client"
 if [[ ! -z $error_meesage ]]; then
-    echo "Failed to create test user: ${error_message}"
+    echo "Failed to get JWT token: ${error_message}"
     exit 1
 else
-    echo "Created test user joeblogs"
+    echo "Creating Users"
 fi 
 
 
@@ -71,49 +71,33 @@ client_result=$(curl --silent --show-error \
 --data-raw '{"type": "password", "temporary": false, "value": "${password}"}' \
 "${KEYCLOAK_URL}/auth/admin/realms/${REALM}/users/${user_sub}/reset-password")
 
-error_message=$(echo $client_result | jq -r '.errorMessage')
 
-echo $client_result
-
-# if error_meesage is not null, then echo "failed to create client"
-if [[ ! -z $error_meesage ]]; then
-    echo "Failed to set the password for ${username}"
-    exit 1
-else
-    echo "Password for ${username} set to ${password}"
-fi 
-
-echo $roleList
 splitRoles=$(echo $roleList | tr ";" "\n")
 
 for roleName in $splitRoles
 do
 
 
- roles=$(curl -X GET "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/roles/${roleName}" \
- -H "Content-Type: application/json" \
- -H "Accept: application/json" \
- -H "Authorization: Bearer ${access_token}")
+
+
 
  roleId=$(echo $roles | jq -r '.id')
- roleNameFound=$(echo $roles | jq 0r '.name')
+
  
 #Find user and get user id
- user=$(curl -X GET "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/users?email=${email}" \
+ user=$(curl --silent --show-error -X GET "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/users?email=${email}" \
  -H "Content-Type: application/json" \
  -H "Accept: application/json" \
  -H "Authorization: Bearer ${access_token}")
 
 userId=$(echo $user | jq -r --slurp '.[0][0].id')
-echo $userId
-echo $roleId
-echo $roleName
 
- roles=$(curl -X POST "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/users/${userId}/role-mappings/realm" \
+
+ roles=$(curl --silent --show-error -X POST "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/users/${userId}/role-mappings/realm" \
  -H "Content-Type: application/json" \
  -H "Accept: application/json" \
  -H "Authorization: Bearer ${access_token}" \
  -d "[{\"id\":\"${roleId}\",\"name\":\"${roleName}\"}]")
 
 done #Roles Loop
-done < test_users.txt #User Loop
+done < /workspaces/application-api/scripts/test_users.txt #User Loop

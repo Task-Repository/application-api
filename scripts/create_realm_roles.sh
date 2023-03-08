@@ -35,5 +35,5 @@ curl --silent --show-error -X POST "${KEYCLOAK_URL}/auth/admin/realms/task-repos
  -H "Authorization: Bearer ${access_token}" \
  -d "{\"name\": \"$role\"}"
  echo "Added role ${role}"
- done < realm_roles.txt
+ done < /workspaces/application-api/scripts/realm_roles.txt
 
