@@ -1,13 +1,26 @@
 #!/bin/bash
 
 # Variables
-REALM="task-repository-testing" 
-CLIENT_ID="frontend"
+# REALM="master" 
+# CLIENT_ID="admin-cli"
 KEYCLOAK_URL="http://localhost:8085"
 
-echo "usernam is ${1}"
-echo "password is ${2}"
-echo "client is ${CLIENT}"
+if [ -z "$3" ] 
+then
+  REALM="master"
+else
+  REALM=$3
+fi
+
+if [ -z "$4" ] 
+then
+  CLIENT_ID="admin-cli"
+else
+  CLIENT_ID=$4
+fi
+
+
+
 
 # Obtain access token
 login_result=$(curl -v --show-error -X POST ${KEYCLOAK_URL}/auth/realms/${REALM}/protocol/openid-connect/token \

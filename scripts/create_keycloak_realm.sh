@@ -29,18 +29,21 @@ echo
 echo "Keycloak started"
 sleep 1
 # Obtain access token
-login_result=$(curl --silent --show-error -X POST ${KEYCLOAK_URL}/auth/realms/master/protocol/openid-connect/token \
+echo $USERNAME
+echo $PASSWORD
+login_result=$(curl -v --show-error -X POST ${KEYCLOAK_URL}/auth/realms/master/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=${USERNAME}" \
-  -d 'password=${PASSWORD}' \
+  -d "username=$USERNAME" \
+  -d "password=$PASSWORD" \
   -d 'grant_type=password' \
   -d 'client_id=admin-cli')
 
-
+echo $login_result
 # Get access_token with jq
 access_token=$(echo $login_result | jq -r '.access_token')
 
-
+echo "*******************************Access Token"
+echo $access_token
 
 
 
@@ -90,8 +93,8 @@ else
 fi 
 
 
-/bin/bash ./scripts/create_realm_roles.sh
-/bin/bash ./scripts/create_keycloak_users.sh
+/bin/bash /workspaces/application-api/scripts/create_realm_roles.sh
+/bin/bash /workspaces/application-api/scripts/create_keycloak_users.sh
 
 
 

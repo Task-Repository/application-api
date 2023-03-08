@@ -77,8 +77,10 @@ splitRoles=$(echo $roleList | tr ";" "\n")
 for roleName in $splitRoles
 do
 
-
-
+roles=$(curl --silent --show-error -X GET "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/roles/$roleName" \
+ -H "Content-Type: application/json" \
+ -H "Accept: application/json" \
+ -H "Authorization: Bearer ${access_token}")
 
 
  roleId=$(echo $roles | jq -r '.id')
@@ -92,7 +94,7 @@ do
 
 userId=$(echo $user | jq -r --slurp '.[0][0].id')
 
-
+# Map realm role to user
  roles=$(curl --silent --show-error -X POST "${KEYCLOAK_URL}/auth/admin/realms/task-repository-testing/users/${userId}/role-mappings/realm" \
  -H "Content-Type: application/json" \
  -H "Accept: application/json" \
