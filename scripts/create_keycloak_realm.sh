@@ -27,7 +27,7 @@ until $(curl --output /dev/null --silent --head --fail ${KEYCLOAK_URL}/auth/real
 done
 echo
 echo "Keycloak started"
-sleep 1
+sleep 60
 # Obtain access token
 echo $USERNAME
 echo $PASSWORD
