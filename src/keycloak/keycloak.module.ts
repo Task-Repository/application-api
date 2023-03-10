@@ -6,7 +6,7 @@ import {
     RoleGuard,
     AuthGuard
   } from 'nest-keycloak-connect'
-import { AppService } from 'src/app.service';
+import { AppService } from '../../src/app.service';
 import { KeycloakController } from './controllers/keycloak.controller';
 
 @Global()
