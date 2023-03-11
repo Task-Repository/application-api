@@ -16,7 +16,7 @@ import { KeycloakController } from './controllers/keycloak.controller';
             authServerUrl: 'http://localhost:8085/auth',
             realm: 'task-repository-testing',
             clientId: 'api',
-            secret: 'etOqKiu1h2F3clSmk6kQ9spf1jTOr9Py',
+            secret: 'EyZtPIggqFluh721pUbtbDIWMunmOOHc',
         })
     ],
     controllers: [KeycloakController],

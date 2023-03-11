@@ -11,7 +11,7 @@ async function getToken(username: string, password: string) {
   
   const response = await fetch(url, {
     method: 'POST',
-    body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=etOqKiu1h2F3clSmk6kQ9spf1jTOr9Py`,
+    body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=EyZtPIggqFluh721pUbtbDIWMunmOOHc`,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', "Accept": "application/json" },
   });
 
@@ -35,7 +35,6 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', async () => {
     const token = await getToken('joeblogs', 'password');
-    console.log(token)
     return request(app.getHttpServer())
       .get('/user/profile')
       .set('Authorization', `Bearer ${token}`)
