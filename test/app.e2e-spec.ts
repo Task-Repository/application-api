@@ -2,6 +2,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import fetch from 'node-fetch'
+
+
+// Function that accepts a username and password and gets a jwt token from keycloak using fetch
+async function getToken(username: string, password: string) {
+  const url = 'http://localhost:8085/auth/realms/task-repository-testing/protocol/openid-connect/token';
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=etOqKiu1h2F3clSmk6kQ9spf1jTOr9Py`,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', "Accept": "application/json" },
+  });
+
+  const json: any = await response.json();
+  
+  return json.access_token;
+}
+
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -15,10 +33,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/ (GET)', async () => {
+    const token = await getToken('joeblogs', 'password');
     return request(app.getHttpServer())
-      .get('/')
+      .get('/user/profile')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
-      .expect('Hello World!');
+      //Set Bearer token here
+      
+      .expect({msg: "This is the profile of the user."});
   });
 });

@@ -6,7 +6,7 @@ import {
     RoleGuard,
     AuthGuard
   } from 'nest-keycloak-connect'
-import { AppService } from '../../src/app.service';
+import { AppService } from 'src/app.service';
 import { KeycloakController } from './controllers/keycloak.controller';
 
 @Global()
@@ -16,7 +16,7 @@ import { KeycloakController } from './controllers/keycloak.controller';
             authServerUrl: 'http://localhost:8085/auth',
             realm: 'task-repository-testing',
             clientId: 'api',
-            secret: 'AeSqwh1hfCj5SDqt4bd0TM5zIZ1sIVmz',
+            secret: 'etOqKiu1h2F3clSmk6kQ9spf1jTOr9Py',
         })
     ],
     controllers: [KeycloakController],

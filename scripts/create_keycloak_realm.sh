@@ -33,10 +33,11 @@ echo $USERNAME
 echo $PASSWORD
 login_result=$(curl -v --show-error -X POST ${KEYCLOAK_URL}/auth/realms/master/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
+  -H "Accept: application/json" \
   -d "username=$USERNAME" \
   -d "password=$PASSWORD" \
   -d 'grant_type=password' \
-  -d 'client_id=admin-cli')
+  -d 'client_id=api')
 
 echo $login_result
 # Get access_token with jq
