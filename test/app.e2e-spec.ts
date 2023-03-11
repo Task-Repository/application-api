@@ -35,6 +35,7 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', async () => {
     const token = await getToken('joeblogs', 'password');
+    console.log(token)
     return request(app.getHttpServer())
       .get('/user/profile')
       .set('Authorization', `Bearer ${token}`)
