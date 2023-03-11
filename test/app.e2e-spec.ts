@@ -11,7 +11,7 @@ async function getToken(username: string, password: string) {
   
   const response = await fetch(url, {
     method: 'POST',
-    body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=EyZtPIggqFluh721pUbtbDIWMunmOOHc`,
+    body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=${process.env.KEYCLOAK_API_TOKEN}`,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', "Accept": "application/json" },
   });
 
