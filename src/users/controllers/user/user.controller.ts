@@ -11,7 +11,7 @@ export class UserController {
 
     @Post("/check_user")
     @Unprotected()
-    checkUser(
+    async checkUser(
         @AuthenticatedUser() user: any
     ) {
         
@@ -21,11 +21,11 @@ export class UserController {
     @Get("/profile")
     @Roles({'roles': ['realm:admin']})
     // @Unprotected()
-    getProfile(
+    async getProfile(
         @AuthenticatedUser() user: any
     ) {
         // console.log(user)
-        console.log(this.userService.fetchUsers())
+        console.log(await this.userService.fetchUsers())
         return {"msg": "This is the profile of the user."}
     }
 }

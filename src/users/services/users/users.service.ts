@@ -4,11 +4,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService) {}
-    upsertUser(user: CreateUserDto) {
+    async upsertUser(user: CreateUserDto) {
         
     }
 
-    fetchUsers() {
-        return this.prisma.client.user.findMany();
+    async fetchUsers() {
+        console.log("*****************The fetch users function is being called.*****************")
+        return await this.prisma.client.user.findMany();
     }
 }
