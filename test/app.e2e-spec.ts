@@ -44,12 +44,14 @@ describe('AppController (e2e)', () => {
       .expect({msg: "This is the profile of the user."});
   });
 
-  it('/ (POST)', async () => {
+  it('/user/check_user (POST)', async () => {
     const token = await getToken('joeblogs', 'password');
-    return request(app.getHttpServer())
+    const response = await  request(app.getHttpServer())
     .post('/user/check_user')
     .set('Authorization', `Bearer ${token}`)
-    .expect(201)
+   
+    expect(response.status).toBe(200);
+    expect(response.body.user).toHaveProperty('email');
 
   })
 });

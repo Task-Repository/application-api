@@ -1,4 +1,5 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthenticatedUser, Roles, Unprotected } from 'nest-keycloak-connect';
 import { UsersService } from 'src/users/services/users/users.service';
 
@@ -10,11 +11,13 @@ export class UserController {
     }
 
     @Post("/check_user")
-    @Unprotected()
+    
     async checkUser(
-        @AuthenticatedUser() user: any
+        @AuthenticatedUser() user: any,
+        @Res() res: Response,
     ) {
-        
+        let result = await this.userService.upsertUser(user);
+        return res.status(200).json({user: result})
     }
     
     
