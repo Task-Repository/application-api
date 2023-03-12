@@ -11,10 +11,96 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  sub       String  @unique
-  username  String  @unique
-  firstName String?
-  lastName  String?
-  email     String @unique
+  id               Int           @id @default(autoincrement())
+  sub              String        @unique
+  username         String        @unique
+  firstName        String?
+  lastName         String?
+  email            String        @unique
+  Templates        Template[]
+  ProjectsManaged  Project[]     @relation(name: "ProjectsManaged")
+  CustomerProjects Project[]     @relation(name: "CustomerProjects")
+  ProjectItems     ProjectItem[]
+}
+
+model Template {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  description   String?
+  createById    Int
+  enabled       Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  createBy      User           @relation(fields: [createById], references: [id])
+  TemplateItems TemplateItem[]
+}
+
+
+//commands Json structure should look like this:
+//[
+//  {
+//    "title","Update and Upgrade Linux",
+//    "commands": [
+//      {
+//        "command": "sudo apt-get update -y && sudo apt-get upgrade -y",
+//        "expectedResult": "Packages will be updated and upgraded, you will not be prompted for any input, you should not get any errors"
+//      },
+//      {
+//        "command": "sudo reboot now",
+//        "expectedResult": "The system will reboot"
+//      }
+//    ]
+
+model TemplateItem {
+  id          Int              @id @default(autoincrement())
+  templateId  Int
+  itemTypeId  Int
+  title       String
+  description String?
+  commands    Json
+  index       Int
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  template    Template         @relation(fields: [templateId], references: [id])
+  itemType    TemplateItemType @relation(fields: [itemTypeId], references: [id])
+  ProjectItem ProjectItem[]
+}
+
+model TemplateItemType {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  description   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  TemplateItems TemplateItem[]
+}
+
+model Project {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  createById   Int
+  customerId   Int?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  createBy     User          @relation(name: "ProjectsManaged", fields: [createById], references: [id])
+  customer     User?         @relation(name: "CustomerProjects", fields: [customerId], references: [id])
+  ProjectItems ProjectItem[]
+}
+
+model ProjectItem {
+  id                 Int           @id @default(autoincrement())
+  projectId          Int
+  itemTypeId         Int
+  fromTemplateItemId Int?
+  title              String
+  description        String?
+  commands           Json
+  index              Int
+  assignedToId       Int?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  project            Project       @relation(fields: [projectId], references: [id])
+  fromTemplateItem   TemplateItem? @relation(fields: [fromTemplateItemId], references: [id])
+  assignedTo         User?         @relation(fields: [assignedToId], references: [id])
 }
