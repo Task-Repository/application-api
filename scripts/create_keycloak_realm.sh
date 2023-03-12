@@ -14,7 +14,8 @@ NEW_CLIENT="api" # You should also change this in the client.json file
 USERNAME="admin" 
 PASSWORD="password"
 REALM_FILE="realm.json"
-CLIENT_FILE="client.json"
+API_CLIENT_FILE="api_client.json"
+FRONTEND_CLIENT_FILE="frontend_client.json"
 KEYCLOAK_URL="http://localhost:8085"
 
 
@@ -27,7 +28,7 @@ until $(curl --output /dev/null --silent --head --fail ${KEYCLOAK_URL}/auth/real
 done
 echo
 echo "Keycloak started"
-sleep 60
+sleep 1
 # Obtain access token
 echo $USERNAME
 echo $PASSWORD
@@ -37,14 +38,12 @@ login_result=$(curl -v --show-error -X POST ${KEYCLOAK_URL}/auth/realms/master/p
   -d "username=$USERNAME" \
   -d "password=$PASSWORD" \
   -d 'grant_type=password' \
-  -d 'client_id=api')
+  -d 'client_id=admin-cli')
 
 echo $login_result
 # Get access_token with jq
 access_token=$(echo $login_result | jq -r '.access_token')
 
-echo "*******************************Access Token"
-echo $access_token
 
 
 
@@ -71,7 +70,7 @@ echo "Created keycloak realm ${NEW_REALM}"
 
 
 ##########
-# Create client
+# Create api client
 ##########
 
 # Create a client using curl and the access_token as a Bearer token
@@ -79,7 +78,7 @@ client_result=$(curl --silent --show-error \
 -X POST \
 -H "Authorization: Bearer ${access_token}" \
 -H "Content-Type: application/json" \
--d @"${CLIENT_FILE}" \
+-d @"${API_CLIENT_FILE}" \
 "${KEYCLOAK_URL}/auth/admin/realms/${NEW_REALM}/clients")
 
 
@@ -93,6 +92,29 @@ else
     echo "Created client ${NEW_CLIENT}"
 fi 
 
+
+##########
+# Create frontend client
+##########
+
+# Create a client using curl and the access_token as a Bearer token
+client_result=$(curl --silent --show-error \
+-X POST \
+-H "Authorization: Bearer ${access_token}" \
+-H "Content-Type: application/json" \
+-d @"${FRONTEND_CLIENT_FILE}" \
+"${KEYCLOAK_URL}/auth/admin/realms/${NEW_REALM}/clients")
+
+
+error_message=$(echo $client_result | jq -r '.errorMessage')
+
+# if error_meesage is not null, then echo "failed to create client"
+if [[ ! -z $error_meesage ]]; then
+    echo "Failed to create client: ${error_message}"
+    exit 1
+else
+    echo "Created client ${NEW_CLIENT}"
+fi 
 
 /bin/bash /workspaces/application-api/scripts/create_realm_roles.sh
 /bin/bash /workspaces/application-api/scripts/create_keycloak_users.sh

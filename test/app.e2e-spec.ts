@@ -14,6 +14,7 @@ async function getToken(username: string, password: string) {
     body: `username=${username}&password=${password}&grant_type=password&client_id=frontend&client_secret=${process.env.KEYCLOAK_API_TOKEN}`,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', "Accept": "application/json" },
   });
+  console.log(response)
 
   const json: any = await response.json();
   
@@ -35,6 +36,7 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', async () => {
     const token = await getToken('joeblogs', 'password');
+    console.log(token)
     return request(app.getHttpServer())
       .get('/user/profile')
       .set('Authorization', `Bearer ${token}`)

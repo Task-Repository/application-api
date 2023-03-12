@@ -1,5 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import * as dotenv  from 'dotenv';
+
+dotenv.config();
+
 import {
     KeycloakConnectModule,
     ResourceGuard,
@@ -16,7 +20,7 @@ import { KeycloakController } from './controllers/keycloak.controller';
             authServerUrl: 'http://localhost:8085/auth',
             realm: 'task-repository-testing',
             clientId: 'api',
-            secret: 'EyZtPIggqFluh721pUbtbDIWMunmOOHc',
+            secret: `${process.env.KEYCLOAK_API_TOKEN}`,
         })
     ],
     controllers: [KeycloakController],

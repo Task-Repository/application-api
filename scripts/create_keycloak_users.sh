@@ -68,7 +68,7 @@ client_result=$(curl --silent --show-error \
 -H "Authorization: Bearer ${access_token}" \
 -H "Content-Type: application/json" \
 -H 'Accept: application/json' \
---data-raw '{"type": "password", "temporary": false, "value": "${password}"}' \
+--data-raw "{\"type\": \"password\", \"temporary\": false, \"value\": \"${password}\"}" \
 "${KEYCLOAK_URL}/auth/admin/realms/${REALM}/users/${user_sub}/reset-password")
 
 

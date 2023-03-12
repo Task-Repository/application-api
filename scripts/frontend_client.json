@@ -1,0 +1,7 @@
+{
+    "clientId":"frontend",
+    "rootUrl":"http://localhost:8080",
+    "adminUrl":"https://localhost:8080",
+    "directAccessGrantsEnabled": true,
+    "publicClient": true
+ }

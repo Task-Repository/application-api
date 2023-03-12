@@ -27,8 +27,6 @@ export class UserController {
     async getProfile(
         @AuthenticatedUser() user: any
     ) {
-        // console.log(user)
-        console.log(await this.userService.fetchUsers())
         return {"msg": "This is the profile of the user."}
     }
 }
