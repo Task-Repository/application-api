@@ -11,7 +11,8 @@
                 "willluke.nextjs",
                 "prisma.prisma",
                 "chneau.resource-monitor",
-                "github.vscode-pull-request-github"
+                "github.vscode-pull-request-github",
+                "eamodio.gitlens"
             ]
         },
     },
