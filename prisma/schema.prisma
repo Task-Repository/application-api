@@ -35,7 +35,6 @@ model Template {
   TemplateItems TemplateItem[]
 }
 
-
 //commands Json structure should look like this:
 //[
 //  {
@@ -52,18 +51,30 @@ model Template {
 //    ]
 
 model TemplateItem {
-  id          Int              @id @default(autoincrement())
-  templateId  Int
-  itemTypeId  Int
-  title       String
-  description String?
-  commands    Json
-  index       Int
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  template    Template         @relation(fields: [templateId], references: [id])
-  itemType    TemplateItemType @relation(fields: [itemTypeId], references: [id])
-  ProjectItem ProjectItem[]
+  id                   Int                   @id @default(autoincrement())
+  templateId           Int
+  itemTypeId           Int
+  title                String
+  description          String?
+  index                Int
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  template             Template              @relation(fields: [templateId], references: [id])
+  itemType             TemplateItemType      @relation(fields: [itemTypeId], references: [id])
+  ProjectItem          ProjectItem[]
+  TemplateItemCommands TemplateItemCommand[]
+}
+
+model TemplateItemCommand {
+  id             Int          @id @default(autoincrement())
+  templateItemId Int
+  description    String?
+  command        String
+  references     String?
+  expectedResult String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  templateItem   TemplateItem @relation(fields: [templateItemId], references: [id])
 }
 
 model TemplateItemType {
@@ -89,18 +100,31 @@ model Project {
 }
 
 model ProjectItem {
-  id                 Int           @id @default(autoincrement())
-  projectId          Int
-  itemTypeId         Int
-  fromTemplateItemId Int?
-  title              String
-  description        String?
-  commands           Json
-  index              Int
-  assignedToId       Int?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  project            Project       @relation(fields: [projectId], references: [id])
-  fromTemplateItem   TemplateItem? @relation(fields: [fromTemplateItemId], references: [id])
-  assignedTo         User?         @relation(fields: [assignedToId], references: [id])
+  id                  Int                   @id @default(autoincrement())
+  projectId           Int
+  itemTypeId          Int
+  fromTemplateItemId  Int?
+  title               String
+  description         String?
+  commands            Json
+  index               Int
+  assignedToId        Int?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  project             Project               @relation(fields: [projectId], references: [id])
+  fromTemplateItem    TemplateItem?         @relation(fields: [fromTemplateItemId], references: [id])
+  assignedTo          User?                 @relation(fields: [assignedToId], references: [id])
+  ProjectItemCommands ProjectItemCommands[]
+}
+
+model ProjectItemCommands {
+  id             Int         @id @default(autoincrement())
+  projectItemId  Int
+  description    String?
+  command        String
+  references     String?
+  expectedResult String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  projectItem    ProjectItem @relation(fields: [projectItemId], references: [id])
 }
