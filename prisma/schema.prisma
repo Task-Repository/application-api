@@ -107,7 +107,6 @@ model ProjectItem {
   fromTemplateItemId  Int?
   title               String
   description         String?
-  commands            Json
   index               Int
   assignedToId        Int?
   hoursRequired       Int
