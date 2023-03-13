@@ -30,15 +30,18 @@ model User {
 }
 
 model Template {
-  id            Int            @id @default(autoincrement())
-  name          String         @unique
-  description   String?
-  createById    Int
-  enabled       Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  createBy      User           @relation(fields: [createById], references: [id])
-  TemplateItems TemplateItem[]
+  id               Int            @id @default(autoincrement())
+  templateParentId Int
+  name             String         @unique
+  description      String?
+  createById       Int
+  enabled          Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  createBy         User           @relation(fields: [createById], references: [id])
+  TemplateItems    TemplateItem[]
+  TemplateParent   Template?      @relation(name: "TemplateParent", fields: [templateParentId], references: [id])
+  TemplateChildren Template[]     @relation(name: "TemplateParent")
 }
 
 //commands Json structure should look like this:
@@ -77,11 +80,20 @@ model TemplateItemCommand {
   templateItemId Int
   description    String?
   command        String
+  language       String
   references     String?
   expectedResult String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   templateItem   TemplateItem @relation(fields: [templateItemId], references: [id])
+}
+
+model TemplateItemCommandLanuage {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TemplateItemType {
@@ -135,22 +147,22 @@ model ProjectLifeCycle {
   inProgressColor          String                     @default("#FFFF00")
   completedColor           String                     @default("#00FF00")
   startedProgressDate      DateTime?
-  completedDate            DateTime? 
+  completedDate            DateTime?
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   ProjectLifeCycleComments ProjectLifeCycleComments[]
 }
 
 model DefaultProjectLifeCycle {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  description String?
-  index     Int
-  notStartedColor          String                     @default("#FF0000")
-  inProgressColor          String                     @default("#FFFF00")
-  completedColor           String                     @default("#00FF00")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  description     String?
+  index           Int
+  notStartedColor String   @default("#FF0000")
+  inProgressColor String   @default("#FFFF00")
+  completedColor  String   @default("#00FF00")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model ProjectLifeCycleComments {
