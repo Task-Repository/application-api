@@ -11,16 +11,21 @@ datasource db {
 }
 
 model User {
-  id               Int           @id @default(autoincrement())
-  sub              String        @unique
-  username         String        @unique
-  firstName        String?
-  lastName         String?
-  email            String        @unique
-  Templates        Template[]
-  ProjectsManaged  Project[]     @relation(name: "ProjectsManaged")
-  CustomerProjects Project[]     @relation(name: "CustomerProjects")
-  ProjectItems     ProjectItem[]
+  id                                Int                                 @id @default(autoincrement())
+  sub                               String                              @unique
+  username                          String                              @unique
+  firstName                         String?
+  lastName                          String?
+  email                             String                              @unique
+  Templates                         Template[]
+  ProjectsManaged                   Project[]                           @relation(name: "ProjectsManaged")
+  CustomerProjects                  Project[]                           @relation(name: "CustomerProjects")
+  ProjectItems                      ProjectItem[]
+  ProjectItemCommandsCompleted      ProjectItemCommands[]               @relation(name: "commandCompletedBy")
+  ProjectItemCommands               ProjectItemCommands[]               @relation(name: "commandAssignedTo")
+  ProjectItemCommandsIssues         ProjectItemCommandsIssues[]
+  ProjectItemCommandsComments       ProjectItemCommandsComments[]
+  ProjectItemCommandsIssuesComments ProjectItemCommandsIssuesComments[]
 }
 
 model Template {
@@ -88,16 +93,35 @@ model TemplateItemType {
 }
 
 model Project {
-  id           Int           @id @default(autoincrement())
-  name         String        @unique
-  description  String?
-  createById   Int
-  customerId   Int?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  createBy     User          @relation(name: "ProjectsManaged", fields: [createById], references: [id])
-  customer     User?         @relation(name: "CustomerProjects", fields: [customerId], references: [id])
-  ProjectItems ProjectItem[]
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  description     String?
+  createById      Int
+  customerId      Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  createBy        User              @relation(name: "ProjectsManaged", fields: [createById], references: [id])
+  customer        User?             @relation(name: "CustomerProjects", fields: [customerId], references: [id])
+  ProjectItems    ProjectItem[]
+  ProjectMetaData ProjectMetaData[]
+}
+
+model ProjectMetaData {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  key       String
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectDefaultMetaData {
+  id        Int      @id @default(autoincrement())
+  key       String
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProjectItem {
@@ -119,13 +143,55 @@ model ProjectItem {
 }
 
 model ProjectItemCommands {
-  id             Int         @id @default(autoincrement())
-  projectItemId  Int
-  description    String?
-  command        String
-  references     String?
-  expectedResult String
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  projectItem    ProjectItem @relation(fields: [projectItemId], references: [id])
+  id                          Int                           @id @default(autoincrement())
+  projectItemId               Int
+  description                 String?
+  command                     String
+  references                  String?
+  expectedResult              String
+  completedDate               DateTime?
+  completedById               Int?
+  assignedToId                Int?
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  projectItem                 ProjectItem                   @relation(fields: [projectItemId], references: [id])
+  completedBy                 User?                         @relation(name: "commandCompletedBy", fields: [completedById], references: [id])
+  assignedTo                  User?                         @relation(name: "commandAssignedTo", fields: [assignedToId], references: [id])
+  ProjectItemCommandsIssues   ProjectItemCommandsIssues[]
+  ProjectItemCommandsComments ProjectItemCommandsComments[]
+}
+
+model ProjectItemCommandsIssues {
+  id                                Int                                 @id @default(autoincrement())
+  commandId                         Int
+  comment                           String
+  userId                            Int
+  resolvesIssue                     Boolean
+  createdAt                         DateTime                            @default(now())
+  updatedAt                         DateTime                            @updatedAt
+  command                           ProjectItemCommands                 @relation(fields: [commandId], references: [id])
+  user                              User                                @relation(fields: [userId], references: [id])
+  ProjectItemCommandsIssuesComments ProjectItemCommandsIssuesComments[]
+}
+
+model ProjectItemCommandsIssuesComments {
+  id        Int                       @id @default(autoincrement())
+  issueId   Int
+  comment   String
+  userId    Int
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @updatedAt
+  issue     ProjectItemCommandsIssues @relation(fields: [issueId], references: [id])
+  user      User                      @relation(fields: [userId], references: [id])
+}
+
+model ProjectItemCommandsComments {
+  id        Int                 @id @default(autoincrement())
+  commandId Int
+  comment   String
+  userId    Int
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  command   ProjectItemCommands @relation(fields: [commandId], references: [id])
+  user      User                @relation(fields: [userId], references: [id])
 }
