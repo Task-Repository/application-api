@@ -44,21 +44,6 @@ model Template {
   TemplateChildren Template[]     @relation(name: "TemplateParent")
 }
 
-//commands Json structure should look like this:
-//[
-//  {
-//    "title","Update and Upgrade Linux",
-//    "commands": [
-//      {
-//        "command": "sudo apt-get update -y && sudo apt-get upgrade -y",
-//        "expectedResult": "Packages will be updated and upgraded, you will not be prompted for any input, you should not get any errors"
-//      },
-//      {
-//        "command": "sudo reboot now",
-//        "expectedResult": "The system will reboot"
-//      }
-//    ]
-
 model TemplateItem {
   id                   Int                   @id @default(autoincrement())
   templateId           Int
