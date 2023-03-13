@@ -26,6 +26,7 @@ model User {
   ProjectItemCommandsIssues         ProjectItemCommandsIssues[]
   ProjectItemCommandsComments       ProjectItemCommandsComments[]
   ProjectItemCommandsIssuesComments ProjectItemCommandsIssuesComments[]
+  ProjectLifeCycleComments          ProjectLifeCycleComments[]
 }
 
 model Template {
@@ -124,6 +125,45 @@ model ProjectDefaultMetaData {
   updatedAt DateTime @updatedAt
 }
 
+model ProjectLifeCycle {
+  id                       Int                        @id @default(autoincrement())
+  name                     String                     @unique
+  description              String?
+  projectId                Int
+  index                    Int
+  notStartedColor          String                     @default("#FF0000")
+  inProgressColor          String                     @default("#FFFF00")
+  completedColor           String                     @default("#00FF00")
+  startedProgressDate      DateTime?
+  completedDate            DateTime? 
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  ProjectLifeCycleComments ProjectLifeCycleComments[]
+}
+
+model DefaultProjectLifeCycle {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  description String?
+  index     Int
+  notStartedColor          String                     @default("#FF0000")
+  inProgressColor          String                     @default("#FFFF00")
+  completedColor           String                     @default("#00FF00")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProjectLifeCycleComments {
+  id                 Int              @id @default(autoincrement())
+  projectLifeCycleId Int
+  userId             Int
+  comment            String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  projectLifeCycle   ProjectLifeCycle @relation(fields: [projectLifeCycleId], references: [id])
+  user               User             @relation(fields: [userId], references: [id])
+}
+
 model ProjectItem {
   id                  Int                   @id @default(autoincrement())
   projectId           Int
@@ -141,7 +181,6 @@ model ProjectItem {
   assignedTo          User?                 @relation(fields: [assignedToId], references: [id])
   ProjectItemCommands ProjectItemCommands[]
   ProjectItemType     ProjectItemType?      @relation(fields: [projectItemTypeId], references: [id])
-  
 }
 
 model ProjectItemType {
