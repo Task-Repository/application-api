@@ -127,7 +127,7 @@ model ProjectDefaultMetaData {
 model ProjectItem {
   id                  Int                   @id @default(autoincrement())
   projectId           Int
-  itemTypeId          Int
+  projectItemTypeId   Int?
   fromTemplateItemId  Int?
   title               String
   description         String?
@@ -140,6 +140,17 @@ model ProjectItem {
   fromTemplateItem    TemplateItem?         @relation(fields: [fromTemplateItemId], references: [id])
   assignedTo          User?                 @relation(fields: [assignedToId], references: [id])
   ProjectItemCommands ProjectItemCommands[]
+  ProjectItemType     ProjectItemType?      @relation(fields: [projectItemTypeId], references: [id])
+  
+}
+
+model ProjectItemType {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  ProjectItems ProjectItem[]
 }
 
 model ProjectItemCommands {
@@ -164,9 +175,10 @@ model ProjectItemCommands {
 model ProjectItemCommandsIssues {
   id                                Int                                 @id @default(autoincrement())
   commandId                         Int
+  title                             String
   comment                           String
   userId                            Int
-  resolvesIssue                     Boolean
+  resolvesIssue                     Boolean                             @default(false)
   createdAt                         DateTime                            @default(now())
   updatedAt                         DateTime                            @updatedAt
   command                           ProjectItemCommands                 @relation(fields: [commandId], references: [id])
@@ -190,6 +202,7 @@ model ProjectItemCommandsComments {
   commandId Int
   comment   String
   userId    Int
+  isPrivate Boolean             @default(false)
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   command   ProjectItemCommands @relation(fields: [commandId], references: [id])
